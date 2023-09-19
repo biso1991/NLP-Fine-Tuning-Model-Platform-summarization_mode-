@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-78+vencjs!z7js4_@8it9v6d6x1b5osi26bqcp#vj*(s&-kan2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'guardian',
+    'API',
 ]
 
 MIDDLEWARE = [
@@ -75,11 +78,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-        "default": dj_database_url.config(
-            default="postgres://mypst:mypass@postgres:5432/mydb",
-            conn_max_age=int(os.getenv("POSTGRES_CONN_MAX_AGE", 600)),
-        )
-    }
+    "default": dj_database_url.config(
+        default="postgres://mypst:mypass@postgres:5432/mydb",
+        conn_max_age=int(os.getenv("POSTGRES_CONN_MAX_AGE", 600)),
+    )
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -121,3 +125,17 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # default
+    'guardian.backends.ObjectPermissionBackend',
+)

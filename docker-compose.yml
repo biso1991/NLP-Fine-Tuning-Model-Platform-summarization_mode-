@@ -1,7 +1,7 @@
 version: '3'
 services:
   postgres:
-    image: postgres:11.6
+    image: postgres:12
     environment:
       POSTGRES_USER: mypst
       POSTGRES_PASSWORD: mypass
@@ -12,8 +12,10 @@ services:
       - DJANGO_SECRET_KEY=rthrtht63=2g*8^6o-u(0w#=x0g1_ejoer))29gzm@18#t@whfdsefefserhgserh
     build: ./
     command: >
-      bash -c "                
-              
+      bash -c " cd backend &&
+                ./manage.py makemigrations 
+                ./manage.py migrate
+              ./manage.py runserver 0.0.0.0:8000  
                "
     volumes:
       - ./:/code
@@ -21,8 +23,8 @@ services:
       - '8000:8000'
     depends_on:
       - postgres
-      - redis
-      - elasticsearch
+    #   - redis
+    #   - elasticsearch
 
   # worker:
   #   build:
@@ -55,7 +57,7 @@ services:
   #   image: dpage/pgadmin4
   #   restart: always
   #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: dbuser@gmail.com
+  #     PGADMIN_DEFAULT_EMAIL: bisor@gmail.com
   #     PGADMIN_DEFAULT_PASSWORD: 1991
   #   ports:
   #     - 5050:80
@@ -66,35 +68,35 @@ services:
   #   ports:
   #     - 1025:1025 # smtp server
   #     - 8025:8025 # web ui
-  elasticsearch:
-    depends_on:
-      - postgres
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
-    environment:
-      - node.name=demo-elasticsearch_1
-      - cluster.name=elasticsearch-docker-cluster
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
-      - xpack.security.enabled=false
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    cap_add:
-      - IPC_LOCK
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-  redis:
-    image: redis:6.2-alpine
-    restart: always
-    ports:
-      - '6379:6379'
-    command: redis-server --save 20 1 --loglevel warning
-    volumes:
-      - cache-redis:/data
+  # elasticsearch:
+  #   depends_on:
+  #     - postgres
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
+  #   environment:
+  #     - node.name=demo-elasticsearch_1
+  #     - cluster.name=elasticsearch-docker-cluster
+  #     - discovery.type=single-node
+  #     - bootstrap.memory_lock=true
+  #     - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+  #     - xpack.security.enabled=false
+  #   ulimits:
+  #     memlock:c
+  #       soft: -1
+  #       hard: -1
+  #   cap_add:
+  #     - IPC_LOCK
+  #   volumes:
+  #     - elasticsearch-data:/usr/share/elasticsearch/data
+  #   ports:
+  # #     - 9200:9200
+  # redis:
+  #   image: redis:6.2-alpine
+  #   restart: always
+  #   ports:
+  #     - '6379:6379'
+  #   command: redis-server --save 20 1 --loglevel warning
+  #   volumes:
+  #     - cache-redis:/data
   # flower:
   #   image: mher/flower
   #   environment:
@@ -105,9 +107,9 @@ services:
   #   depends_on:
   #     - redis
   #   restart: always
-volumes:
-  elasticsearch-data:
-    driver: local
-  cache-redis:
-    driver: local
-# --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+# volumes:
+#   elasticsearch-data:
+#     driver: local
+#   cache-redis:
+#     driver: local
+# # --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
