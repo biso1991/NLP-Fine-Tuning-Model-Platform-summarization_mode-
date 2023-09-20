@@ -9,6 +9,7 @@ click-plugins==1.1.1
 click-repl==0.3.0
 dj-database-url==2.0.0
 Django==4.2.5
+django-configurations==2.4
 django-filter==23.2
 django-guardian==2.4.0
 djangorestframework==3.14.0
